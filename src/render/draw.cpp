@@ -15,8 +15,8 @@ void drawGround()
             Vector3 v01 = cornerPos(x,   y+1);
             Vector3 v11 = cornerPos(x+1, y+1);
             Color c = gWorld[x][y].col;
-            DrawTriangle3D(v00, v10, v11, c);
-            DrawTriangle3D(v00, v11, v01, c);
+            DrawTriangle3D(v00, v11, v10, c); // ensure upward facing
+            DrawTriangle3D(v00, v01, v11, c);
         }
 }
 
@@ -74,12 +74,13 @@ void drawGrid()
 {
     rlDisableDepthTest();
     Color g = {0,80,0,255};
-    for(int y=0; y<MAP_H; ++y)
-        for(int x=0; x<MAP_W; ++x) {
-            Vector3 c = toWorld(x,y,0.02f);
-            DrawLine3D({c.x - TILE/2, c.y, c.z}, {c.x + TILE/2, c.y, c.z}, g);
-            DrawLine3D({c.x, c.y, c.z - TILE/2}, {c.x, c.y, c.z + TILE/2}, g);
-        }
+    for(int y=0; y<=MAP_H; ++y)
+        for(int x=0; x<MAP_W; ++x)
+            DrawLine3D(cornerPos(x,y,0.02f), cornerPos(x+1,y,0.02f), g);
+
+    for(int x=0; x<=MAP_W; ++x)
+        for(int y=0; y<MAP_H; ++y)
+            DrawLine3D(cornerPos(x,y,0.02f), cornerPos(x,y+1,0.02f), g);
     rlEnableDepthTest();
 }
 
