@@ -1,5 +1,6 @@
 #include "camera.hpp"
 #include "raylib.h"
+#include "raymath.h"
 
 IsoCam::IsoCam() {
     cam.target = {0,0,0};
