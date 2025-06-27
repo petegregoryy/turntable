@@ -8,34 +8,16 @@ Vector3 toWorld(int x,int y,float yOff)
     return { (x - MAP_W/2) * TILE, yOff, (y - MAP_H/2) * TILE };
 }
 
-bool tileHasTrack(int x,int y)
-{
-    return x>=0 && x<MAP_W && y>=0 && y<MAP_H && gWorld[x][y].has;
-}
-
-void recalcMask(int x,int y)
+void placeTrack(int x,int y,uint8_t mask)
 {
     if(x<0||x>=MAP_W||y<0||y>=MAP_H) return;
-    if(!gWorld[x][y].has) { gWorld[x][y].mask = 0; return; }
-    uint8_t m = 0;
-    if(tileHasTrack(x,   y-1)) m |= N;
-    if(tileHasTrack(x+1, y  )) m |= E;
-    if(tileHasTrack(x,   y+1)) m |= S;
-    if(tileHasTrack(x-1, y  )) m |= W;
-    if(tileHasTrack(x+1, y-1)) m |= NE;
-    if(tileHasTrack(x-1, y-1)) m |= NW;
-    if(tileHasTrack(x+1, y+1)) m |= SE;
-    if(tileHasTrack(x-1, y+1)) m |= SW;
-    gWorld[x][y].mask = m;
-}
-
-void toggleTrack(int x,int y)
-{
-    if(x<0||x>=MAP_W||y<0||y>=MAP_H) return;
-    gWorld[x][y].has = !gWorld[x][y].has;
-    for(int dy=-1; dy<=1; ++dy)
-        for(int dx=-1; dx<=1; ++dx)
-            recalcMask(x+dx, y+dy);
+    if(gWorld[x][y].has && gWorld[x][y].mask == mask) {
+        gWorld[x][y].has  = false;
+        gWorld[x][y].mask = 0;
+    } else {
+        gWorld[x][y].has  = true;
+        gWorld[x][y].mask = mask;
+    }
 }
 
 void modifyHeight(int x,int y,int delta)
@@ -46,12 +28,10 @@ void modifyHeight(int x,int y,int delta)
 
 void generateHills()
 {
+    Color ground = {0, 120, 0, 255};
     for(int y=0; y<MAP_H; ++y)
         for(int x=0; x<MAP_W; ++x) {
-            float fx = float(x)/MAP_W * 6.283f;
-            float fy = float(y)/MAP_H * 6.283f;
-            int   h  = int(std::round(std::sin(fx)*std::sin(fy) * 3.0f));
-            gWorld[x][y].h   = h;
-            gWorld[x][y].col = (h < 0 ? BLUE : GREEN);
+            gWorld[x][y].h   = 0;
+            gWorld[x][y].col = ground;
         }
 }
