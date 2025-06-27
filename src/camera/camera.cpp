@@ -1,4 +1,4 @@
-#include "../camera/camera.hpp"
+#include "camera.hpp"
 #include "raylib.h"
 
 IsoCam::IsoCam() {
