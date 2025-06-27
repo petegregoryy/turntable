@@ -10,23 +10,23 @@ static Mesh makeDiagMesh(float w,float h)
     float hh   = h/2.0f;
 
     Vector3 v[8] = {
-        { half, -hh, -half + hw },
-        { half - hw, -hh, -half },
-        { -half, -hh, half - hw },
-        { -half + hw, -hh, half },
-        { half,  hh, -half + hw },
-        { half - hw,  hh, -half },
-        { -half,  hh, half - hw },
-        { -half + hw,  hh, half }
+        { -half + hw, -hh, -half },      // 0
+        { -half,      -hh, -half + hw }, // 1
+        {  half,      -hh,  half - hw }, // 2
+        {  half - hw, -hh,  half },      // 3
+        { -half + hw,  hh, -half },      // 4
+        { -half,       hh, -half + hw }, // 5
+        {  half,       hh,  half - hw }, // 6
+        {  half - hw,  hh,  half }       // 7
     };
 
     unsigned short ind[36] = {
-        0,1,2, 0,2,3,       // bottom
-        4,6,5, 4,7,6,       // top
-        0,4,5, 0,5,1,       // sides
-        1,5,6, 1,6,2,
-        2,6,7, 2,7,3,
-        3,7,4, 3,4,0
+        0,1,2, 2,1,3,       // bottom
+        4,6,5, 6,7,5,       // top
+        0,4,5, 0,5,1,
+        1,5,7, 1,7,3,
+        2,3,7, 2,7,6,
+        0,2,6, 0,6,4
     };
 
     Mesh m{};
