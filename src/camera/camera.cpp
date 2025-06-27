@@ -15,7 +15,11 @@ void IsoCam::update() {
 }
 
 void IsoCam::pan(float dx, float dz) {
-    cam.target = Vector3Add(cam.target, {dx,0,dz});
+    const float s = 0.70710678f; // 1/sqrt(2)
+    Vector3 right   = { s,0,-s };
+    Vector3 forward = { s,0, s };
+    Vector3 move = Vector3Add(Vector3Scale(right, dx), Vector3Scale(forward, dz));
+    cam.target = Vector3Add(cam.target, move);
     update();
 }
 
