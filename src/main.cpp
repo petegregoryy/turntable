@@ -22,10 +22,10 @@ int main()
         float dt = GetFrameTime();
 
         float pan = 15.0f * dt;
-        if (IsKeyDown(KEY_A)) cam.pan( pan, 0);
-        if (IsKeyDown(KEY_D)) cam.pan(-pan, 0);
-        if (IsKeyDown(KEY_W)) cam.pan(0,  pan);
-        if (IsKeyDown(KEY_S)) cam.pan(0, -pan);
+        if (IsKeyDown(KEY_A)) cam.pan(-pan, 0);
+        if (IsKeyDown(KEY_D)) cam.pan( pan, 0);
+        if (IsKeyDown(KEY_W)) cam.pan(0, -pan);
+        if (IsKeyDown(KEY_S)) cam.pan(0,  pan);
         cam.zoom(GetMouseWheelMove());
 
         int gx, gy;
