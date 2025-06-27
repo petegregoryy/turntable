@@ -43,10 +43,33 @@ void drawTracks()
         }
 }
 
+void drawGhostTrack(int x,int y,uint8_t m)
+{
+    if(!m) return;
+    Vector3 base = toWorld(x, y, gWorld[x][y].h*STEP + 0.05f);
+    Color c = {200,200,200,120};
+    if(m == (E|W)) DrawModel(gEW, base, 1.0f, c);
+    if(m == (N|S)) DrawModel(gNS, base, 1.0f, c);
+    if(m == (NE|SW)) {
+        rlPushMatrix();
+        rlTranslatef(base.x, base.y, base.z);
+        rlRotatef(45,0,1,0);
+        DrawModel(gDG,{0,0,0},1.0f,c);
+        rlPopMatrix();
+    }
+    if(m == (NW|SE)) {
+        rlPushMatrix();
+        rlTranslatef(base.x, base.y, base.z);
+        rlRotatef(-45,0,1,0);
+        DrawModel(gDG,{0,0,0},1.0f,c);
+        rlPopMatrix();
+    }
+}
+
 void drawGrid()
 {
     rlDisableDepthTest();
-    Color g = {255,255,255,30};
+    Color g = {0,80,0,255};
     for(int y=0; y<=MAP_H; ++y)
         DrawLine3D(toWorld(0,y,0.02f), toWorld(MAP_W,y,0.02f), g);
     for(int x=0; x<=MAP_W; ++x)
@@ -54,7 +77,7 @@ void drawGrid()
     rlEnableDepthTest();
 }
 
-bool pickTile(const IsoCam& c, int& gx, int& gy)
+bool pickTile(const IsoCam& c, int& gx, int& gy, Vector3* pos)
 {
     Ray ray = GetMouseRay(GetMousePosition(), c.cam);
     RayCollision hit = GetRayCollisionQuad(ray,
@@ -62,5 +85,6 @@ bool pickTile(const IsoCam& c, int& gx, int& gy)
     if(!hit.hit) return false;
     gx = int(std::floor(hit.point.x / TILE + MAP_W/2));
     gy = int(std::floor(hit.point.z / TILE + MAP_H/2));
+    if(pos) *pos = hit.point;
     return gx>=0 && gx<MAP_W && gy>=0 && gy<MAP_H;
 }

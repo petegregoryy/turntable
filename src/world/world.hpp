@@ -23,8 +23,6 @@ struct Tile {
 extern Tile gWorld[MAP_W][MAP_H];
 
 Vector3 toWorld(int x,int y,float yOff=0.0f);
-bool tileHasTrack(int x,int y);
-void recalcMask(int x,int y);
-void toggleTrack(int x,int y);
+void placeTrack(int x,int y,uint8_t mask);
 void modifyHeight(int x,int y,int delta);
 void generateHills();
