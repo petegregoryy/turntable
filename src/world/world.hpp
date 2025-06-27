@@ -14,13 +14,16 @@ enum Dir : uint8_t {
 };
 
 struct Tile {
-    int     h    = 0;      // height level
     bool    has  = false;  // has track present
     uint8_t mask = 0;      // connection mask if track present
     Color   col  = GREEN;  // surface colour
 };
 
 extern Tile gWorld[MAP_W][MAP_H];
+extern int  gHeights[MAP_W+1][MAP_H+1];
+
+float getTileHeight(int x,int y);
+Vector3 cornerPos(int x,int y,float yOff=0.0f);
 
 Vector3 toWorld(int x,int y,float yOff=0.0f);
 void placeTrack(int x,int y,uint8_t mask);

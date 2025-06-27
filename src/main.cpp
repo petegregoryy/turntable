@@ -23,10 +23,15 @@ int main()
         Vector3 c = toWorld(gx, gy);
         float dx = (pos.x - c.x) / TILE;
         float dz = (pos.z - c.z) / TILE;
-        float ax = fabsf(dx), az = fabsf(dz);
-        if(ax > 0.25f && az > 0.25f)
-            return (uint8_t)((dx>0?E:W) | (dz>0?S:N));
-        return (ax >= az) ? (uint8_t)(E|W) : (uint8_t)(N|S);
+        float dEW   = fabsf(dz);
+        float dNS   = fabsf(dx);
+        float dNESW = fabsf(dx - dz) * 0.7071f;
+        float dNWSE = fabsf(dx + dz) * 0.7071f;
+        float best  = dEW; uint8_t mask = E|W;
+        if(dNS < best)  { best = dNS;  mask = N|S; }
+        if(dNESW < best){ best = dNESW; mask = NE|SW; }
+        if(dNWSE < best){ best = dNWSE; mask = NW|SE; }
+        return mask;
     };
 
     while(!WindowShouldClose()) {

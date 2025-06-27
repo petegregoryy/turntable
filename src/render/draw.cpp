@@ -10,9 +10,13 @@ void drawGround()
 {
     for(int y=0; y<MAP_H; ++y)
         for(int x=0; x<MAP_W; ++x) {
-            float   h   = gWorld[x][y].h * STEP;
-            Vector3 pos = toWorld(x, y, h/2.0f);
-            DrawCube(pos, TILE, h + 0.05f, TILE, gWorld[x][y].col);
+            Vector3 v00 = cornerPos(x,   y);
+            Vector3 v10 = cornerPos(x+1, y);
+            Vector3 v01 = cornerPos(x,   y+1);
+            Vector3 v11 = cornerPos(x+1, y+1);
+            Color c = gWorld[x][y].col;
+            DrawTriangle3D(v00, v10, v11, c);
+            DrawTriangle3D(v00, v11, v01, c);
         }
 }
 
@@ -23,7 +27,7 @@ void drawTracks()
             if(!gWorld[x][y].has) continue;
             uint8_t m = gWorld[x][y].mask;
             if(!m) continue;
-            Vector3 base = toWorld(x, y, gWorld[x][y].h*STEP + 0.05f);
+            Vector3 base = toWorld(x, y, 0.05f);
             if(m & (E|W)) DrawModel(gEW, base, 1.0f, WHITE);
             if(m & (N|S)) DrawModel(gNS, base, 1.0f, WHITE);
             if(m & (NE|SW)) {
@@ -46,7 +50,7 @@ void drawTracks()
 void drawGhostTrack(int x,int y,uint8_t m)
 {
     if(!m) return;
-    Vector3 base = toWorld(x, y, gWorld[x][y].h*STEP + 0.05f);
+    Vector3 base = toWorld(x, y, 0.05f);
     Color c = {200,200,200,120};
     if(m == (E|W)) DrawModel(gEW, base, 1.0f, c);
     if(m == (N|S)) DrawModel(gNS, base, 1.0f, c);
@@ -70,10 +74,12 @@ void drawGrid()
 {
     rlDisableDepthTest();
     Color g = {0,80,0,255};
-    for(int y=0; y<=MAP_H; ++y)
-        DrawLine3D(toWorld(0,y,0.02f), toWorld(MAP_W,y,0.02f), g);
-    for(int x=0; x<=MAP_W; ++x)
-        DrawLine3D(toWorld(x,0,0.02f), toWorld(x,MAP_H,0.02f), g);
+    for(int y=0; y<MAP_H; ++y)
+        for(int x=0; x<MAP_W; ++x) {
+            Vector3 c = toWorld(x,y,0.02f);
+            DrawLine3D({c.x - TILE/2, c.y, c.z}, {c.x + TILE/2, c.y, c.z}, g);
+            DrawLine3D({c.x, c.y, c.z - TILE/2}, {c.x, c.y, c.z + TILE/2}, g);
+        }
     rlEnableDepthTest();
 }
 
